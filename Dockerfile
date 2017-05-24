@@ -1,9 +1,7 @@
-FROM php:5.6-apache
-MAINTAINER Benjamin Hutchins <ben@hutchins.co>
+FROM php:7.1.5-apache
+MAINTAINER Michael Green <michael.green@cg.nl>
 
-# Waiting in antiticipation for built-time arguments
-# https://github.com/docker/docker/issues/14634
-ENV MEDIAWIKI_VERSION 1.25.2
+ENV MEDIAWIKI_VERSION 1.27.3
 
 # Add EXPOSE 443 because the php:apache only has EXPOSE 80
 EXPOSE 80 443
@@ -14,13 +12,18 @@ EXPOSE 80 443
 RUN set -x; \
     apt-get update \
     && apt-get install -y --no-install-recommends \
+        ca-certificates \
         g++ \
         libicu52 \
         libicu-dev \
         libzip-dev \
         imagemagick \
+        libldap2-dev \
+        libssl-dev \
+        libmcrypt-dev \
     && ln -fs /usr/lib/x86_64-linux-gnu/libzip.so /usr/lib/ \
-    && docker-php-ext-install intl mysqli zip mbstring opcache fileinfo \
+    && docker-php-ext-configure ldap --with-libdir=lib/x86_64-linux-gnu \
+    && docker-php-ext-install intl mysqli zip mbstring opcache fileinfo ldap mcrypt \
     && apt-get purge -y --auto-remove g++ libicu-dev libzip-dev \
     && rm -rf /var/lib/apt/lists/*
 
