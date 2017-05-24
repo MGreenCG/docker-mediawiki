@@ -238,4 +238,10 @@ mkdir -p images
 chown -R www-data: .
 chmod 755 images
 
+# Unset sensitive stuff
+unset MEDIAWIKI_ADMIN_USER
+unset MEDIAWIKI_ADMIN_PASS
+unset MEDIAWIKI_DB_USER
+unset MEDIAWIKI_DB_PASSWORD
+
 exec "$@"
